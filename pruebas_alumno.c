@@ -15,10 +15,9 @@ struct lista {
 	nodo_t *nodo_final;
 	size_t *tamanio;
 };
-
 struct lista_iterador {
-	//y acá?
-	int sarasa;
+	nodo_t *corriente;
+	lista_t *lista;
 };
 
 int comparador_prueba(void *elemento_1, void *elemento_2) 
@@ -33,6 +32,7 @@ int comparador_prueba(void *elemento_1, void *elemento_2)
 
 	return -1;
 }
+
 
 void lista_crear_crea_una_lista_vacia() 
 {
@@ -227,6 +227,98 @@ void lista_buscar_elemento_busca_segun_condicion_dada() {
 	lista_destruir(lista);
 }
 
+bool es_mayor(void *elemento_1, void *elemento_2) {
+    return *(int*)elemento_1 > *(int*) elemento_2;
+}
+
+
+void iterador_interno_itera_internamente_sobre_lista() 
+{
+	lista_t *lista = lista_crear();
+
+	int numero_x = 100;
+	int numero_y = 10;
+	int numero_z = 3;
+	int numero_p = 1;
+	int numero_k = 2;
+
+
+	void *elemento_0 = &numero_x;
+	void *elemento_1 = &numero_y;
+	void *elemento_2 = &numero_z;
+	void *elemento_3 = &numero_p;
+	void *elemento_4 = &numero_k;
+
+
+	lista_insertar(lista, elemento_0);
+	lista_insertar(lista, elemento_1); 
+	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_3);
+	lista_insertar(lista, elemento_4);
+
+	int numero_de_corte = 2;
+	int numero_de_corte_principio = 120;
+
+	
+
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, &numero_de_corte) == 3, "Recorre la lista hasta que encuentre un elemento menor a 2.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, &numero_de_corte_principio) == 1, "Recorre la lista hasta que encuentre un elemento menor a 120.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, NULL, &numero_de_corte) == 0, "Al pasar una funcion nula, devuelve 0.");
+	pa2m_afirmar(lista_con_cada_elemento(NULL, es_mayor, &numero_de_corte) == 0, "Al pasar una lista nula, devuelve 0.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, NULL) == 0, "Al pasar un contexto nulo, devuelve 0.");
+
+
+	lista_destruir(lista);
+
+}
+
+
+void iterador_externo_itera_externamente_sobre_lista() 
+{
+	lista_t *lista = lista_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+	int numero_3 = 3;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+	void *elemento_3 = &numero_3;
+
+	lista_insertar(lista, elemento_0);
+	lista_insertar(lista, elemento_1); 
+	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_3);
+
+	lista_iterador_t *iterador = lista_iterador_crear(lista);
+
+	pa2m_afirmar(iterador != NULL, "Iterador se crea correctamente");
+	pa2m_afirmar(lista_iterador_crear(NULL) == NULL, "Si la lista es nula, no se crea el iterador.");
+	pa2m_afirmar(lista_iterador_elemento_actual(iterador) == elemento_0, "Al crear el iterador se inicializa correctamente con el primer elemento de la lista.");
+	pa2m_afirmar(lista_iterador_avanzar(iterador) == true, "Al tener siguiente, el iterador avanza correctamente");
+	pa2m_afirmar(lista_iterador_elemento_actual(iterador) == elemento_1, "Al avanzar, se actualiza correctamente el elemento actual.");
+
+	lista_iterador_avanzar(iterador);
+	lista_iterador_avanzar(iterador);
+
+	pa2m_afirmar(lista_iterador_tiene_siguiente(iterador) == false, "Al ser corriente el ultimo elemento, el iterador no tiene siguiente.");
+
+
+	lista_destruir(lista);
+	lista_iterador_destruir(iterador);
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -252,6 +344,12 @@ int main()
 
 	pa2m_nuevo_grupo("\nObtencion elemento segun condicion.");
 	lista_buscar_elemento_busca_segun_condicion_dada();
+
+	pa2m_nuevo_grupo("\nFunciones del iterador interno");
+	iterador_interno_itera_internamente_sobre_lista();
+
+	pa2m_nuevo_grupo("\nFunciones del iterador externo");
+	iterador_externo_itera_externamente_sobre_lista();
 
 	return pa2m_mostrar_reporte();
 }

@@ -1,5 +1,7 @@
 #include "pa2m.h"
 #include "src/lista.h"
+#include "src/pila.h"
+#include "src/cola.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
@@ -68,16 +70,13 @@ void lista_insertar_insierta_un_elemento_al_final()
 void lista_insertar_en_posicion_inserta_elemento_en_posicion() 
 {
     lista_t *lista = lista_crear();
-    int numero_1 = 1;
-    int numero_2 = 2;
+
     int numero_3 = 3;
     int numero_4 = 4;
     int numero_5 = 5;
     int numero_6 = 6;
     int numero_7 = 7;
 
-	void *elemento_1 = &numero_1;
-	void *elemento_2 = &numero_2;
 	void *elemento_3 = &numero_3;
 	void *elemento_4 = &numero_4;
 	void *elemento_5 = &numero_5;
@@ -85,21 +84,21 @@ void lista_insertar_en_posicion_inserta_elemento_en_posicion()
 	void *elemento_7 = &numero_7;
 
 
-    lista = lista_insertar(lista, elemento_1);
-    lista = lista_insertar(lista, elemento_2);
+
 
     lista_insertar_en_posicion(lista, elemento_3, 0);
     lista_insertar_en_posicion(lista, elemento_4, 1); 
     lista_insertar_en_posicion(lista, elemento_5, 3); 
-    lista_insertar_en_posicion(lista, elemento_6, 4); 
     lista_insertar_en_posicion(lista, elemento_7, 10); 
+
 
     pa2m_afirmar(lista->nodo_inicio->elemento == elemento_3, "Inserta un elemento al inicio de la lista.");
     pa2m_afirmar(lista->nodo_inicio->siguiente->elemento == elemento_4, "Inserta un elemento en la posición 1.");
-    pa2m_afirmar(lista->nodo_inicio->siguiente->siguiente->siguiente->elemento == elemento_5, "Inserta un elemento en el medio de la lista.");
-    pa2m_afirmar(lista->nodo_final->elemento == elemento_7, "Inserta un elemento al final de la lista.");
+    pa2m_afirmar(lista->nodo_inicio->siguiente->siguiente->elemento == elemento_5, "Inserta un elemento en el medio de la lista.");
+    lista_insertar_en_posicion(lista, elemento_6, 0); 
+	pa2m_afirmar(lista->nodo_inicio->elemento == elemento_6, "Inserta un elemento al inicio de la lista");
     pa2m_afirmar(lista->nodo_final->siguiente == NULL, "El último nodo apunta a NULL.");
-	pa2m_afirmar(lista_tamanio(lista) == 7, "Aumenta correctamente el tamaño de la lista.");
+	pa2m_afirmar(lista_tamanio(lista) == 5, "Aumenta correctamente el tamaño de la lista.");
 
 	lista_destruir(lista);
 } 
@@ -311,7 +310,53 @@ void iterador_externo_itera_externamente_sobre_lista()
 }
 
 
+void se_implementa_una_pila() 
+{
+	pila_t *pila = pila_crear(); 
 
+	pa2m_afirmar(pila != NULL, "Se puede crear pila.");
+	pa2m_afirmar(pila_vacia(pila) == true, "Se crea pila vacia.");
+	pa2m_afirmar(pila_tope(pila) == NULL, "Al crear la pila, el tope es NULL.");
+
+	int numero_1 = 1;
+	void *elemento_1 = &numero_1;
+
+	int numero_2 = 2;
+	void *elemento_2 = &numero_2;
+
+	int numero_3 = 3;
+	void *elemento_3 = &numero_3;
+
+	int numero_4 = 4;
+	void *elemento_4 = &numero_4;
+
+	pila_apilar(pila, elemento_1);
+
+	pa2m_afirmar(pila_tope(pila) == elemento_1, "Al apilar un elemento, el tope es el elemento que se apiló.");
+	
+	pila_apilar(pila, elemento_2);
+	pa2m_afirmar(pila_tope(pila) == elemento_2, "Al apilar un elemento, el tope es el elemento que se apiló.");
+	pa2m_afirmar(pila_tamanio(pila) == 2, "Se actualiza correctamente el tamaño.");
+
+	pila_apilar(pila, elemento_3);
+	pila_apilar(pila, elemento_4);
+	pila_desapilar(pila);
+	pa2m_afirmar(pila_tope(pila) == elemento_3, "Se desapila correctamente el elemento en tope.");
+
+	
+	pila_destruir(pila);
+}
+
+
+void se_implementa_una_cola() 
+{
+	cola_t *cola = cola_crear(); 
+
+	pa2m_afirmar(pila != NULL, "Se puede crear pila.");
+	pa2m_afirmar(pila_vacia(pila) == true, "Se crea pila vacia.");
+	pa2m_afirmar(pila_tope(pila) == NULL, "Al crear la pila, el tope es NULL.");
+
+}
 
 
 
@@ -350,6 +395,13 @@ int main()
 
 	pa2m_nuevo_grupo("\nFunciones del iterador externo");
 	iterador_externo_itera_externamente_sobre_lista();
+
+	pa2m_nuevo_grupo("\nFunciones de pila");
+	se_implementa_una_pila();
+
+	pa2m_nuevo_grupo("\nFunciones de cola");
+	se_implementa_una_cola();
+
 
 	return pa2m_mostrar_reporte();
 }

@@ -28,7 +28,6 @@ lista_t *lista_crear()
 	}
 
 	return lista;
-
 }
 
 lista_t *lista_insertar(lista_t *lista, void *elemento)
@@ -37,7 +36,7 @@ lista_t *lista_insertar(lista_t *lista, void *elemento)
 		return NULL;
 	}
 
-	nodo_t *nuevo_nodo = calloc(1, sizeof(nodo_t));
+	nodo_t *nuevo_nodo = malloc(sizeof(nodo_t));
 	if (!nuevo_nodo) {
 		return NULL;
 	}
@@ -61,38 +60,36 @@ lista_t *lista_insertar_en_posicion(lista_t *lista, void *elemento, size_t posic
     if (!lista) {
         return NULL;
     }
-
-	if (posicion > lista_tamanio(lista)) {
-		return lista_insertar(lista, elemento);
-	}
+	
+    if (posicion >= lista_tamanio(lista) || lista_vacia(lista)) {
+        return lista_insertar(lista, elemento);
+    }
 
     nodo_t *nuevo_nodo = malloc(sizeof(nodo_t));
     if (!nuevo_nodo) {
         return NULL;
     }
+    nuevo_nodo->elemento = elemento;
+    nuevo_nodo->siguiente = NULL;
 
-	nodo_t *nodo_actual = lista->nodo_inicio;
-	int posicion_actual = 1;
-
-
-	if (posicion == 0) {
+    if (posicion == 0) {
         nuevo_nodo->siguiente = lista->nodo_inicio;
-		lista->nodo_inicio = nuevo_nodo; 
+        lista->nodo_inicio = nuevo_nodo;
     } else {
-		while (posicion_actual < posicion) {
-			nodo_actual = nodo_actual->siguiente;
-			posicion_actual++;
-		}
+        nodo_t *nodo_anterior = lista->nodo_inicio;
+        for (size_t i = 1; i < posicion; i++) {
+            nodo_anterior = nodo_anterior->siguiente;
+        }
+        nuevo_nodo->siguiente = nodo_anterior->siguiente;
+        nodo_anterior->siguiente = nuevo_nodo;
+    }
 
-		nuevo_nodo->siguiente = nodo_actual->siguiente;
-		nodo_actual->siguiente = nuevo_nodo;
-	}
-
-	nuevo_nodo->elemento = elemento;
     (lista->tamanio)++;
-
     return lista;
 }
+
+
+
 
 void *lista_quitar(lista_t *lista)
 {

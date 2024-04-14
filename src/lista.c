@@ -128,7 +128,7 @@ void *lista_quitar_de_posicion(lista_t *lista, size_t posicion)
         return NULL;
     }
 
-	if (posicion > lista_tamanio(lista)) {
+	if (posicion >= lista_tamanio(lista)) {
 		return lista_quitar(lista);
 	}
 

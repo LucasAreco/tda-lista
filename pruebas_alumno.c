@@ -352,10 +352,35 @@ void se_implementa_una_cola()
 {
 	cola_t *cola = cola_crear(); 
 
-	pa2m_afirmar(pila != NULL, "Se puede crear pila.");
-	pa2m_afirmar(pila_vacia(pila) == true, "Se crea pila vacia.");
-	pa2m_afirmar(pila_tope(pila) == NULL, "Al crear la pila, el tope es NULL.");
+	pa2m_afirmar(cola != NULL, "Se puede crear cola.");
+	pa2m_afirmar(cola_vacia(cola) == true, "Se crea cola vacia.");
+	pa2m_afirmar(cola_frente(cola) == NULL, "Al crear la cola, su frente es NULL.");
+	int numero_1 = 1;
+	void *elemento_1 = &numero_1;
 
+	int numero_2 = 2;
+	void *elemento_2 = &numero_2;
+
+	int numero_3 = 3;
+	void *elemento_3 = &numero_3;
+
+	int numero_4 = 4;
+	void *elemento_4 = &numero_4;
+
+	cola_encolar(cola, elemento_1);
+
+	pa2m_afirmar(cola_frente(cola) == elemento_1, "Al encolar un elemento, el frente es el elemento que se encoló.");
+	
+	cola_encolar(cola, elemento_2);
+	pa2m_afirmar(cola_frente(cola) == elemento_1, "Al encolar un elemento, el frente se matiene.");
+	pa2m_afirmar(cola_tamanio(cola) == 2, "Se actualiza correctamente el tamaño.");
+
+	cola_encolar(cola, elemento_3);
+	cola_encolar(cola, elemento_4);
+	cola_desencolar(cola);
+	pa2m_afirmar(cola_frente(cola) == elemento_2, "Se desencola correctamente el elemento del frente.");
+
+	cola_destruir(cola);
 }
 
 

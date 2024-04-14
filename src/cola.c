@@ -40,6 +40,7 @@ size_t cola_tamanio(cola_t *cola)
 		return 0;
 	}
 	
+	
 	return lista_tamanio((lista_t*)cola);
 
 }

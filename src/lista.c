@@ -21,7 +21,6 @@ struct lista_iterador {
 lista_t *lista_crear()
 {
 	return calloc(1, sizeof(lista_t));
-	;
 }
 
 lista_t *lista_insertar(lista_t *lista, void *elemento)

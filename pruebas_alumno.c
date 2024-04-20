@@ -6,7 +6,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 typedef struct nodo {
 	void *elemento;
 	struct nodo *siguiente;
@@ -22,27 +21,28 @@ struct lista_iterador {
 	lista_t *lista;
 };
 
-int comparador_prueba(void *elemento_1, void *elemento_2) 
+int comparador_numeros(void *elemento_1, void *elemento_2)
 {
 	if (!elemento_1 || !elemento_2) {
 		return -1;
 	}
 
-	if (*(int*)elemento_1 == *(int*)elemento_2) {
+	if (*(int *)elemento_1 == *(int *)elemento_2) {
 		return 0;
 	}
 
 	return -1;
 }
 
-
-void lista_crear_crea_una_lista_vacia() 
+void lista_crear_crea_una_lista_vacia()
 {
 	lista_t *lista = lista_crear();
-	pa2m_afirmar(lista != NULL, "Se puede crear lista.");
+	pa2m_afirmar(lista != NULL, "Se puede crear lista válida.");
 	pa2m_afirmar(lista_vacia(lista) == true, "Se crea lista vacia.");
-	pa2m_afirmar(lista->nodo_inicio == NULL, "Al crear la lista, el nodo inicial es NULL.");
-	pa2m_afirmar(lista->nodo_final == NULL, "Al crear la lista, el nodo final es NULL.");
+	pa2m_afirmar(lista->nodo_inicio == NULL,
+		     "Al crear una lista, el nodo inicial es NULL.");
+	pa2m_afirmar(lista->nodo_final == NULL,
+		     "Al crear una lista, el nodo final es NULL.");
 
 	lista_destruir(lista);
 }
@@ -52,84 +52,135 @@ void lista_insertar_insierta_un_elemento_al_final()
 	lista_t *lista = lista_crear();
 	int numero_1 = 1;
 	int numero_2 = 2;
+	int numero_3 = 3;
 
 	void *elemento_1 = &numero_1;
 	void *elemento_2 = &numero_2;
+	void *elemento_3 = &numero_3;
+
+	pa2m_afirmar(lista_insertar(NULL, elemento_3) == NULL,
+		     "Insertar al final de una lista nula devuelve NULL.");
 
 	lista_insertar(lista, elemento_1);
 	lista_insertar(lista, elemento_2);
+	lista_insertar(lista, elemento_3);
 
-	pa2m_afirmar(lista != NULL && lista->nodo_inicio->elemento == elemento_1 , "Se puede insertar un elemento en la lista vacía.");
-	pa2m_afirmar(lista->nodo_final->elemento == elemento_2, "Se puede insertar un elemento en una lista no vacía.");
-	pa2m_afirmar(lista->nodo_final->siguiente == NULL, "El ultimo nodo apunta a NULL.");
-	pa2m_afirmar(lista_tamanio(lista) == 2, "Se actualiza el tamaño de la lista.");
+	pa2m_afirmar(
+		lista->nodo_inicio->elemento == elemento_1,
+		"Se puede insertar un elemento en una lista vacía y su posición es correcta");
+	pa2m_afirmar(
+		lista->nodo_final->elemento == elemento_3,
+		"Se puede insertar un elemento en una lista no vacía y su posición es correcta.");
+	lista_insertar(lista, false);
+	pa2m_afirmar(lista->nodo_final->elemento == false,
+		     "Se puede insertar al final un false.");
+	lista_insertar(lista, NULL);
+	pa2m_afirmar(lista->nodo_final->elemento == NULL,
+		     "Se puede insertar al final un NULL.");
+	pa2m_afirmar(lista->nodo_final->siguiente == NULL,
+		     "El ultimo nodo apunta a NULL.");
+	pa2m_afirmar(lista_tamanio(lista) == 5,
+		     "Se actualiza el tamaño de la lista.");
 
 	lista_destruir(lista);
 }
 
-void lista_insertar_en_posicion_inserta_elemento_en_posicion() 
+void lista_insertar_en_posicion_inserta_elemento_en_posicion()
 {
-    lista_t *lista = lista_crear();
+	lista_t *lista = lista_crear();
 
-    int numero_3 = 3;
-    int numero_4 = 4;
-    int numero_5 = 5;
-    int numero_6 = 6;
-    int numero_7 = 7;
+	int numero_3 = 3;
+	int numero_4 = 4;
+	int numero_5 = 5;
+	int numero_7 = 7;
+	char caracter_x = 'x';
 
 	void *elemento_3 = &numero_3;
 	void *elemento_4 = &numero_4;
 	void *elemento_5 = &numero_5;
-	void *elemento_6 = &numero_6;
 	void *elemento_7 = &numero_7;
+	void *elemento_x = &caracter_x;
 
+	pa2m_afirmar(
+		lista_insertar_en_posicion(NULL, elemento_3, 20) == NULL,
+		"Insertar en un cualquier posición de una lista nula devuelve NULL.");
 
+	lista_insertar_en_posicion(lista, elemento_3, 0);
 
+	pa2m_afirmar(
+		lista->nodo_inicio->elemento == elemento_3,
+		"Inserta un elemento al inicio de una lista vacía y la posición es correcta.");
 
-    lista_insertar_en_posicion(lista, elemento_3, 0);
-    lista_insertar_en_posicion(lista, elemento_4, 1); 
-    lista_insertar_en_posicion(lista, elemento_5, 3); 
-    lista_insertar_en_posicion(lista, elemento_7, 10); 
+	lista_insertar_en_posicion(lista, elemento_4, 1);
+	lista_insertar_en_posicion(lista, elemento_5, 2);
 
+	pa2m_afirmar(
+		lista->nodo_inicio->elemento == elemento_3 &&
+			lista->nodo_inicio->siguiente->elemento == elemento_4 &&
+			lista->nodo_final->elemento == elemento_5,
+		"Inserta varios elementos y todas las posiciones son correctas.");
 
-    pa2m_afirmar(lista->nodo_inicio->elemento == elemento_3, "Inserta un elemento al inicio de la lista.");
-    pa2m_afirmar(lista->nodo_inicio->siguiente->elemento == elemento_4, "Inserta un elemento en la posición 1.");
-    pa2m_afirmar(lista->nodo_inicio->siguiente->siguiente->elemento == elemento_5, "Inserta un elemento en el medio de la lista.");
-    lista_insertar_en_posicion(lista, elemento_6, 0); 
-	pa2m_afirmar(lista->nodo_inicio->elemento == elemento_6, "Inserta un elemento al inicio de la lista");
-    pa2m_afirmar(lista->nodo_final->siguiente == NULL, "El último nodo apunta a NULL.");
-	pa2m_afirmar(lista_tamanio(lista) == 5, "Aumenta correctamente el tamaño de la lista.");
+	lista_insertar_en_posicion(lista, elemento_x, 1);
+	pa2m_afirmar(
+		lista->nodo_inicio->siguiente->elemento == elemento_x,
+		"Inserta un elemento en cualquier posición de una lista no vacía y la posición es correcta.");
+
+	lista_insertar_en_posicion(lista, elemento_7, 10);
+	pa2m_afirmar(
+		lista->nodo_final->elemento == elemento_7,
+		"Al pasar una posición mayor al tamaño, se agrega el elemento al final de una lista por defecto.");
+
+	lista_insertar_en_posicion(lista, elemento_7, 90);
+	pa2m_afirmar(lista->nodo_final->elemento == elemento_7,
+		     "Inserta elemento repetido en una lista correctamente.");
+
+	lista_insertar_en_posicion(lista, NULL, 1);
+	pa2m_afirmar(lista->nodo_inicio->siguiente->elemento == NULL,
+		     "Inserta un elemento nulo en una lista válida.");
+
+	pa2m_afirmar(lista->nodo_final->siguiente == NULL,
+		     "El último nodo apunta a NULL.");
+	pa2m_afirmar(lista_tamanio(lista) == 7,
+		     "Se actualiza el tamaño de una lista correctamente.");
 
 	lista_destruir(lista);
-} 
+}
 
 void lista_quitar_quita_elementos_al_final()
 {
 	lista_t *lista = lista_crear();
 
-	int numero_0 = 0;
-	int numero_1 = 1;
-	int numero_2 = 2;
-	int numero_3 = 3;
+	char letra_1 = 'A';
+	char letra_2 = 'L';
+	char letra_3 = 'G';
+	char letra_4 = 'O';
 
-	void *elemento_0 = &numero_0;
-	void *elemento_1 = &numero_1;
-	void *elemento_2 = &numero_2;
-	void *elemento_3 = &numero_3;
+	void *elemento_1 = &letra_1;
+	void *elemento_2 = &letra_2;
+	void *elemento_3 = &letra_3;
+	void *elemento_4 = &letra_4;
 
-	lista_insertar(lista, elemento_0);
+	pa2m_afirmar(lista_quitar(NULL) == NULL,
+		     "Quitar al final en una lista nula devuelve NULL.");
+	pa2m_afirmar(lista_quitar(lista) == NULL,
+		     "Quitar al final en una lista vacía devuelve NULL.");
 
-	pa2m_afirmar(lista_quitar(lista) == elemento_0, "Se quita el único elemento correctamente.");
-	pa2m_afirmar(lista_vacia(lista), "Al quitar el unico elemento, lista queda vacía.");
-
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
+	lista_insertar(lista, elemento_4);
 
-	pa2m_afirmar(lista_quitar(lista) == elemento_3, "Se quita el último elemento correctamente.");
-	pa2m_afirmar(lista_ultimo(lista) == elemento_2, "El nuevo ultimo elemento es correcto.");
-	pa2m_afirmar(lista_tamanio(lista) == 2, "Reduce tamaño de la lista");
-	pa2m_afirmar(lista->nodo_final->siguiente == NULL, "El ultimo nodo apunta a NULL.");
+	pa2m_afirmar(lista_quitar(lista) == elemento_4,
+		     "Quita el único elemento de una lista no vacía.");
+
+	lista_insertar(lista, NULL);
+	pa2m_afirmar(lista->nodo_final->elemento == NULL,
+		     "Quita un elemento nulo de la lista.");
+
+	pa2m_afirmar(lista_tamanio(lista) == 4,
+		     "Al quitar, reduce el tamaño de una lista.");
+	pa2m_afirmar(lista->nodo_final->siguiente == NULL,
+		     "El ultimo nodo apunta a NULL.");
 
 	lista_destruir(lista);
 }
@@ -138,6 +189,12 @@ void lista_quitar_en_posicion_quita_elemento_en_posicion()
 {
 	lista_t *lista = lista_crear();
 
+	pa2m_afirmar(
+		lista_quitar_de_posicion(NULL, 1) == NULL,
+		"Quitar en cualquier posición de una lista nula devuelve NULL.");
+	pa2m_afirmar(
+		lista_quitar_de_posicion(lista, 4) == NULL,
+		"Quitar en cualquier posición de una lista vacía devuelve NULL.");
 
 	int numero_0 = 0;
 	int numero_1 = 1;
@@ -150,29 +207,118 @@ void lista_quitar_en_posicion_quita_elemento_en_posicion()
 	void *elemento_3 = &numero_3;
 
 	lista_insertar(lista, elemento_0);
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
 
-	pa2m_afirmar(lista_quitar_de_posicion(lista, 2) == elemento_2, "Se quita el elemento de la posicion dada correctamente.");
-	pa2m_afirmar(lista->nodo_inicio->siguiente->elemento == elemento_1, "Anterior al eliminado sigue en lista.");
-	pa2m_afirmar(lista_ultimo(lista) == elemento_3, "Se mantiene vinculado el ultimo elemento de la lista.");
-	pa2m_afirmar(lista_tamanio(lista) == 3, "Resta tamaño de la lista.");
-	pa2m_afirmar(lista_quitar_de_posicion(lista, 10) == elemento_3, "Elimina el último elemento si se le pasa una posicion mayor al tamaño.");
-	pa2m_afirmar(lista_tamanio(lista) == 2, "Resta tamaño de la lista.");
+	pa2m_afirmar(
+		lista_quitar_de_posicion(lista, 2) == elemento_2,
+		"Quita de cualquier posición un elemento en una lista no vacía.");
+	pa2m_afirmar(
+		lista_quitar_de_posicion(lista, 902) == elemento_3,
+		"Al pasar una posición mayor al tamaño, se quita el elemento al final de una lista por defecto.");
 
-	lista_quitar_de_posicion(lista, 0);
-	pa2m_afirmar(lista_primero(lista) == elemento_1, "Quita el primer elemento correctamente.");
-	pa2m_afirmar(lista_ultimo(lista) == elemento_1, "Continua vinculado el ultimo elemento a la lista.");
+	pa2m_afirmar(lista_quitar_de_posicion(lista, 0) == elemento_0 &&
+			     lista_quitar_de_posicion(lista, 1) == elemento_1,
+		     "Quita varios elementos de una lista.");
 
+	lista_insertar(lista, elemento_0);
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
-	lista_quitar_de_posicion(lista, 10);
-	pa2m_afirmar(lista_ultimo(lista) == elemento_1, "Se mantiene vinculado el ultimo elemento de la lista.");
+
+	lista_insertar_en_posicion(lista, NULL, 2);
+	pa2m_afirmar(lista_quitar_de_posicion(lista, 2) == NULL,
+		     "Quita un elemento nulo de la lista.");
+
+	pa2m_afirmar(lista_tamanio(lista) == 4,
+		     "Al quitar, reduce el tamaño de una lista.");
+	pa2m_afirmar(lista->nodo_final->siguiente == NULL,
+		     "El ultimo nodo apunta a NULL.");
 
 	lista_destruir(lista);
 }
 
-void lista_elemento_en_posicion_devuelve_elemento_segun_posicion_dada() 
+void lista_elemento_en_posicion_obtiene_elemento_de_la_posicion_indicada()
+{
+	lista_t *lista = lista_crear();
+
+	char letra_1 = 'A';
+	char letra_2 = 'L';
+	char letra_3 = 'G';
+	char letra_4 = 'O';
+
+	void *elemento_1 = &letra_1;
+	void *elemento_2 = &letra_2;
+	void *elemento_3 = &letra_3;
+	void *elemento_4 = &letra_4;
+
+	pa2m_afirmar(lista_elemento_en_posicion(NULL, 0) == NULL,
+		     "Obtener elemento de una lista nula, devuelve NULL.");
+	pa2m_afirmar(lista_elemento_en_posicion(lista, 0) == NULL,
+		     "Obtener elemento de una lista vacía, devuelve NULL");
+
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
+	lista_insertar(lista, elemento_3);
+	lista_insertar(lista, elemento_4);
+
+	pa2m_afirmar(
+		lista_elemento_en_posicion(lista, 1) == elemento_2,
+		"Al indicarle una posición válida, devuelve correctamente el elemento de esa posición.");
+	pa2m_afirmar(
+		lista_elemento_en_posicion(lista, 10) == NULL,
+		"Al indicarle una posicion invalida en una lista válida, develve NULL");
+
+	lista_destruir(lista);
+}
+
+void lista_buscar_elemento_busca_segun_condicion_dada()
+{
+	lista_t *lista = lista_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+	int numero_3 = 3;
+	int numero_4 = 4;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+	void *elemento_3 = &numero_3;
+	void *elemento_4 = &numero_4;
+
+	pa2m_afirmar(lista_buscar_elemento(NULL, comparador_numeros,
+					   elemento_1) == NULL,
+		     "Buscar en una lista nula, devuelve NULL.");
+	pa2m_afirmar(lista_buscar_elemento(lista, comparador_numeros,
+					   elemento_2) == NULL,
+		     "Buscar en una lista vacía, devuelve NULL.");
+	pa2m_afirmar(lista_buscar_elemento(lista, NULL, elemento_4) == NULL,
+		     "Buscar con un comparador nulo, devuelve NULL.");
+	pa2m_afirmar(lista_buscar_elemento(lista, comparador_numeros, NULL) ==
+			     NULL,
+		     "Buscar con un contexto nulo, devuelve NULL.");
+
+	lista_insertar(lista, elemento_0);
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
+	lista_insertar(lista, elemento_3);
+
+	pa2m_afirmar(
+		lista_buscar_elemento(lista, comparador_numeros, elemento_3) ==
+			elemento_3,
+		"Devuelve correctamente el elemento buscado de acuerdo al contexto.");
+	pa2m_afirmar(
+		lista_buscar_elemento(lista, comparador_numeros, elemento_4) ==
+			NULL,
+		"Buscar un elemento que no existe en la lista, devuelve NULL.");
+
+	lista_destruir(lista);
+}
+
+void lista_tamanio_devuelve_cantidad_de_elemento_de_la_lista()
 {
 	lista_t *lista = lista_crear();
 
@@ -186,20 +332,24 @@ void lista_elemento_en_posicion_devuelve_elemento_segun_posicion_dada()
 	void *elemento_2 = &numero_2;
 	void *elemento_3 = &numero_3;
 
+	pa2m_afirmar(lista_tamanio(NULL) == 0,
+		     "El tamaño de una lista nula es 0.");
+	pa2m_afirmar(lista_tamanio(lista) == 0,
+		     "El tamaño de una lista vacía es 0.");
+
 	lista_insertar(lista, elemento_0);
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
-	
-	pa2m_afirmar(lista_elemento_en_posicion(lista, 0) == elemento_0, "Al indicarle la primera posicion, devuelve correctamente el primer elemento.");
-	pa2m_afirmar(lista_elemento_en_posicion(lista, 1) == elemento_1, "Al indicarle la segunda posicion, devuelve correctamente el segundo elemento.");
-	pa2m_afirmar(lista_elemento_en_posicion(lista, 10) == NULL, "Al indicarle una posicion invalida, devuelve NULL.");
+
+	pa2m_afirmar(lista_tamanio(lista) == 4,
+		     "Devuelve correctamente el tamaño de una lista no vacía.");
 
 	lista_destruir(lista);
 }
 
-
-void lista_buscar_elemento_busca_segun_condicion_dada() {
+void lista_vacia_devuelve_si_tiene_elementos_o_no_la_lista()
+{
 	lista_t *lista = lista_crear();
 
 	int numero_0 = 0;
@@ -212,35 +362,79 @@ void lista_buscar_elemento_busca_segun_condicion_dada() {
 	void *elemento_2 = &numero_2;
 	void *elemento_3 = &numero_3;
 
+	pa2m_afirmar(lista_vacia(NULL) == true,
+		     "Verifica que la lista nula este vacía.");
+	pa2m_afirmar(lista_vacia(lista) == true,
+		     "Verifica que la lista vacía este vacía.");
+
 	lista_insertar(lista, elemento_0);
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
 
-	pa2m_afirmar(lista_buscar_elemento(lista, comparador_prueba, elemento_1) == elemento_1, "Devuelve correctamente el elemento buscado");
-	pa2m_afirmar(lista_buscar_elemento(lista, comparador_prueba, elemento_2) == elemento_2, "Devuelve correctamente el elemento buscado");
-	pa2m_afirmar(lista_buscar_elemento(lista, comparador_prueba, NULL) == NULL, "Al pasar contexto nulo, devuelve NULL");
-	pa2m_afirmar(lista_buscar_elemento(NULL, comparador_prueba, elemento_0) == NULL, "Al pasar una lista nula, devuelve NULL");
-	pa2m_afirmar(lista_buscar_elemento(lista, NULL, elemento_1) == NULL, "Al pasar una función nula, devuelve NULL"); 
+	pa2m_afirmar(lista_vacia(lista) == false,
+		     "Verifica que la lista con elementos no este vacía.");
 
 	lista_destruir(lista);
 }
 
-bool es_mayor(void *elemento_1, void *elemento_2) {
-    return *(int*)elemento_1 > *(int*) elemento_2;
+void lista_primer_y_ultimo_elemento()
+{
+	lista_t *lista = lista_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+	int numero_3 = 3;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+	void *elemento_3 = &numero_3;
+
+	pa2m_afirmar(lista_primero(NULL) == NULL,
+		     "El primer elemento de una lista nula es nulo.");
+	pa2m_afirmar(lista_primero(lista) == NULL,
+		     "El primero elemento de una lista vacía es nulo.");
+	pa2m_afirmar(lista_ultimo(NULL) == NULL,
+		     "El último elemento de una lista nula es nulo.");
+	pa2m_afirmar(lista_ultimo(lista) == NULL,
+		     "El último elemento de una lista vacía es nulo.");
+
+	lista_insertar(lista, elemento_0);
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
+	lista_insertar(lista, elemento_3);
+
+	pa2m_afirmar(
+		lista_primero(lista) == elemento_0,
+		"Obtiene el primer elemento de una lista no vacía correctamente.");
+	pa2m_afirmar(
+		lista_ultimo(lista) == elemento_3,
+		"Obtiene el úlitmo elemento de una lista no vacía correctamente.");
+
+	lista_destruir(lista);
 }
 
+bool es_menor(void *elemento_1, void *elemento_2)
+{
+	return *(int *)elemento_1 < *(int *)elemento_2;
+}
 
-void iterador_interno_itera_internamente_sobre_lista() 
+bool es_mayor(void *elemento_1, void *elemento_2)
+{
+	return *(int *)elemento_1 > *(int *)elemento_2;
+}
+
+void iterador_interno_itera_internamente_sobre_lista()
 {
 	lista_t *lista = lista_crear();
 
 	int numero_x = 100;
 	int numero_y = 10;
 	int numero_z = 3;
-	int numero_p = 1;
+	int numero_p = 203;
 	int numero_k = 2;
-
 
 	void *elemento_0 = &numero_x;
 	void *elemento_1 = &numero_y;
@@ -248,31 +442,38 @@ void iterador_interno_itera_internamente_sobre_lista()
 	void *elemento_3 = &numero_p;
 	void *elemento_4 = &numero_k;
 
+	int numero_de_corte = 200;
+	int numero_sin_corte = 1;
+
+	pa2m_afirmar(lista_con_cada_elemento(NULL, es_menor,
+					     &numero_de_corte) == 0,
+		     "Iterar sobre una lista nula devuelve 0.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_menor,
+					     &numero_de_corte) == 0,
+		     "Iterar sobre una lista vacía devuelve 0.");
 
 	lista_insertar(lista, elemento_0);
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
 	lista_insertar(lista, elemento_4);
 
-	int numero_de_corte = 2;
-	int numero_de_corte_principio = 120;
-
-	
-
-	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, &numero_de_corte) == 3, "Recorre la lista hasta que encuentre un elemento menor a 2.");
-	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, &numero_de_corte_principio) == 1, "Recorre la lista hasta que encuentre un elemento menor a 120.");
-	pa2m_afirmar(lista_con_cada_elemento(lista, NULL, &numero_de_corte) == 0, "Al pasar una funcion nula, devuelve 0.");
-	pa2m_afirmar(lista_con_cada_elemento(NULL, es_mayor, &numero_de_corte) == 0, "Al pasar una lista nula, devuelve 0.");
-	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor, NULL) == 0, "Al pasar un contexto nulo, devuelve 0.");
-
+	pa2m_afirmar(lista_con_cada_elemento(lista, NULL, &numero_de_corte) ==
+			     0,
+		     "Iterar sobre una lista con función nula devuelve 0.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_menor, NULL) == 0,
+		     "Iterar sobre una lista con contexto nulo devuelve 0.");
+	pa2m_afirmar(
+		lista_con_cada_elemento(lista, es_menor, &numero_de_corte) == 4,
+		"Recorre la lista hasta que encuentre un elemento que coincida y devuelve los cantidad de elementos iterados.");
+	pa2m_afirmar(lista_con_cada_elemento(lista, es_mayor,
+					     &numero_sin_corte) == 5,
+		     "Recorre la lista en su totalidad.");
 
 	lista_destruir(lista);
-
 }
 
-
-void iterador_externo_itera_externamente_sobre_lista() 
+void iterador_externo_itera_externamente_sobre_lista()
 {
 	lista_t *lista = lista_crear();
 
@@ -286,111 +487,291 @@ void iterador_externo_itera_externamente_sobre_lista()
 	void *elemento_2 = &numero_2;
 	void *elemento_3 = &numero_3;
 
+	pa2m_afirmar(lista_iterador_crear(NULL) == NULL,
+		     "Crear iterador de una lista nula devuelve NULL.");
+	pa2m_afirmar(lista_iterador_crear(lista) == NULL,
+		     "Crear iterador de una lista vacía devuelve NULL.");
+
 	lista_insertar(lista, elemento_0);
-	lista_insertar(lista, elemento_1); 
-	lista_insertar(lista, elemento_2); 
+	lista_insertar(lista, elemento_1);
+	lista_insertar(lista, elemento_2);
 	lista_insertar(lista, elemento_3);
 
 	lista_iterador_t *iterador = lista_iterador_crear(lista);
 
-	pa2m_afirmar(iterador != NULL, "Iterador se crea correctamente");
-	pa2m_afirmar(lista_iterador_crear(NULL) == NULL, "Si la lista es nula, no se crea el iterador.");
-	pa2m_afirmar(lista_iterador_elemento_actual(iterador) == elemento_0, "Al crear el iterador se inicializa correctamente con el primer elemento de la lista.");
-	pa2m_afirmar(lista_iterador_avanzar(iterador) == true, "Al tener siguiente, el iterador avanza correctamente");
-	pa2m_afirmar(lista_iterador_elemento_actual(iterador) == elemento_1, "Al avanzar, se actualiza correctamente el elemento actual.");
+	pa2m_afirmar(iterador != NULL, "Crea iterador con una lista no vacía.");
+	pa2m_afirmar(lista_iterador_avanzar(NULL) == false,
+		     "Avanzar con un iterador nulo devuelve false.");
+
+	pa2m_afirmar(
+		lista_iterador_avanzar(iterador) == true,
+		"Avanza con un iterador teniendo elementos para recorrer correctamente.");
+
+	pa2m_afirmar(
+		lista_iterador_elemento_actual(NULL) == NULL,
+		"Iterar elemento actual de un iterador nulo devuelve NULL.");
+	pa2m_afirmar(
+		lista_iterador_elemento_actual(iterador) == elemento_1,
+		"Itera el elemento actual teniendo más elementos que iterar.");
+	pa2m_afirmar(lista_iterador_tiene_siguiente(NULL) == false,
+		     "Iterador nulo no tiene siguiente.");
+	pa2m_afirmar(
+		lista_iterador_tiene_siguiente(iterador) == true,
+		"Iterador válido tiene siguiente para iterar al no tener más elementos para iterar.");
 
 	lista_iterador_avanzar(iterador);
 	lista_iterador_avanzar(iterador);
+	pa2m_afirmar(
+		lista_iterador_elemento_actual(iterador) == elemento_3,
+		"Itera el elemento actual sin tener más elementos que iterar.");
+	pa2m_afirmar(
+		lista_iterador_avanzar(iterador) == false,
+		"Avanzar con un iterador sin tener elementos por recorrer devuelve false.");
 
-	pa2m_afirmar(lista_iterador_tiene_siguiente(iterador) == false, "Al ser corriente el ultimo elemento, el iterador no tiene siguiente.");
-
-
-	lista_destruir(lista);
 	lista_iterador_destruir(iterador);
+	lista_destruir(lista);
 }
 
-
-void se_implementa_una_pila() 
+void crear_una_pila_crea_una_pila_vacia()
 {
-	pila_t *pila = pila_crear(); 
+	pila_t *pila = pila_crear();
 
-	pa2m_afirmar(pila != NULL, "Se puede crear pila.");
-	pa2m_afirmar(pila_vacia(pila) == true, "Se crea pila vacia.");
-	pa2m_afirmar(pila_tope(pila) == NULL, "Al crear la pila, el tope es NULL.");
+	pa2m_afirmar(pila != NULL, "Se puede crear una pila válida.");
+	pa2m_afirmar(pila_vacia(pila) == true, "Crea una pila vacía.");
+	pa2m_afirmar(pila_tope(pila) == NULL,
+		     "Al crear una pila, su tope es NULL.");
 
-	int numero_1 = 1;
-	void *elemento_1 = &numero_1;
-
-	int numero_2 = 2;
-	void *elemento_2 = &numero_2;
-
-	int numero_3 = 3;
-	void *elemento_3 = &numero_3;
-
-	int numero_4 = 4;
-	void *elemento_4 = &numero_4;
-
-	pila_apilar(pila, elemento_1);
-
-	pa2m_afirmar(pila_tope(pila) == elemento_1, "Al apilar un elemento, el tope es el elemento que se apiló.");
-	
-	pila_apilar(pila, elemento_2);
-	pa2m_afirmar(pila_tope(pila) == elemento_2, "Al apilar un elemento, el tope es el elemento que se apiló.");
-	pa2m_afirmar(pila_tamanio(pila) == 2, "Se actualiza correctamente el tamaño.");
-
-	pila_apilar(pila, elemento_3);
-	pila_apilar(pila, elemento_4);
-	pila_desapilar(pila);
-	pa2m_afirmar(pila_tope(pila) == elemento_3, "Se desapila correctamente el elemento en tope.");
-
-	
 	pila_destruir(pila);
 }
 
-
-void se_implementa_una_cola() 
+void pila_apilar_apila_elementos()
 {
-	cola_t *cola = cola_crear(); 
+	pila_t *pila = pila_crear();
 
-	pa2m_afirmar(cola != NULL, "Se puede crear cola.");
-	pa2m_afirmar(cola_vacia(cola) == true, "Se crea cola vacia.");
-	pa2m_afirmar(cola_frente(cola) == NULL, "Al crear la cola, su frente es NULL.");
+	int numero_0 = 0;
 	int numero_1 = 1;
-	void *elemento_1 = &numero_1;
-
 	int numero_2 = 2;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
 	void *elemento_2 = &numero_2;
 
-	int numero_3 = 3;
-	void *elemento_3 = &numero_3;
+	pa2m_afirmar(pila_apilar(NULL, elemento_0) == NULL,
+		     "Apilar en una pila nula devuelve NULL.");
+	pila_apilar(pila, elemento_0);
+	pa2m_afirmar(pila_tope(pila) == elemento_0,
+		     "Apila un elemento en una pila vacía correctamente.");
 
-	int numero_4 = 4;
-	void *elemento_4 = &numero_4;
+	pila_apilar(pila, elemento_1);
+	pila_apilar(pila, elemento_2);
 
-	cola_encolar(cola, elemento_1);
+	pa2m_afirmar(pila_tope(pila) == elemento_2,
+		     "Apila un elemento en una pila no vacía correctamente.");
+	pa2m_afirmar(pila_tamanio(pila) == 3,
+		     "Actualiza tamaño de la pila correctamente");
 
-	pa2m_afirmar(cola_frente(cola) == elemento_1, "Al encolar un elemento, el frente es el elemento que se encoló.");
-	
-	cola_encolar(cola, elemento_2);
-	pa2m_afirmar(cola_frente(cola) == elemento_1, "Al encolar un elemento, el frente se matiene.");
-	pa2m_afirmar(cola_tamanio(cola) == 2, "Se actualiza correctamente el tamaño.");
+	pila_destruir(pila);
+}
 
-	cola_encolar(cola, elemento_3);
-	cola_encolar(cola, elemento_4);
-	cola_desencolar(cola);
-	pa2m_afirmar(cola_frente(cola) == elemento_2, "Se desencola correctamente el elemento del frente.");
+void pila_desapilar_desapila_elementos()
+{
+	pila_t *pila = pila_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+
+	pa2m_afirmar(pila_desapilar(NULL) == NULL,
+		     "Desapilar un elemento en una pila nula devuelve NULL.");
+	pa2m_afirmar(pila_desapilar(pila) == NULL,
+		     "Desapilar un elemento en una pila vacía devuelve NULL");
+
+	pila_apilar(pila, elemento_0);
+	pila_apilar(pila, elemento_1);
+	pila_apilar(pila, elemento_2);
+
+	pila_desapilar(pila);
+
+	pa2m_afirmar(
+		pila_tope(pila) == elemento_1,
+		"Desapila un elemento en una pila no vacía correctamente.");
+	pa2m_afirmar(pila_tamanio(pila) == 2,
+		     "Actualiza tamaño de la pila correctamente.");
+
+	pila_destruir(pila);
+}
+
+void pila_tamanio_tope_y_vacia()
+{
+	pila_t *pila = pila_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+
+	pa2m_afirmar(pila_tamanio(NULL) == 0,
+		     "El tamaño de una pila nula devuelve 0.");
+	pa2m_afirmar(pila_tamanio(pila) == 0,
+		     "El tamaño de una pila vacía devuelve 0.");
+
+	pa2m_afirmar(pila_tope(NULL) == NULL,
+		     "El tope de una pila nula devuelve NULL.");
+	pa2m_afirmar(pila_tope(pila) == NULL,
+		     "El tope de una pila vacía devuelve NULL.");
+
+	pa2m_afirmar(pila_vacia(NULL) == true,
+		     "Verifica que una pila nula este vacía. ");
+	pa2m_afirmar(pila_vacia(pila) == true,
+		     "Verifica que una pila vacía este vacía.");
+
+	pila_apilar(pila, elemento_0);
+	pila_apilar(pila, elemento_1);
+	pila_apilar(pila, elemento_2);
+
+	pa2m_afirmar(pila_tamanio(pila) == 3,
+		     "Actualiza tamaño de la pila correctamente.");
+
+	pila_desapilar(pila);
+	pa2m_afirmar(pila_tope(pila) == elemento_1,
+		     "Devuelve el elemento del tope luego de desapilar.");
+
+	pila_desapilar(pila);
+	pila_desapilar(pila);
+
+	pa2m_afirmar(pila_vacia(pila) == true,
+		     "Al desapilar todos los elementos, la pila queda vacía.");
+
+	pila_destruir(pila);
+}
+
+void cola_crear_crea_cola_vacia()
+{
+	cola_t *cola = cola_crear();
+
+	pa2m_afirmar(cola != NULL, "Crea cola válida.");
+	pa2m_afirmar(cola_vacia(cola) == true, "Crea cola vacía.");
+	pa2m_afirmar(cola_frente(cola) == NULL,
+		     "Al crear la cola su frente es NULL.");
 
 	cola_destruir(cola);
 }
 
+void cola_encolar_encola_elementos()
+{
+	cola_t *cola = cola_crear();
 
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
 
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
 
+	pa2m_afirmar(cola_encolar(NULL, elemento_2) == NULL,
+		     "Encolar en una cola nula devuelve NULL");
+	cola_encolar(cola, elemento_0);
+	pa2m_afirmar(cola_frente(cola) == elemento_0,
+		     "Encola un elemento en una vacía correctamente.");
 
+	cola_encolar(cola, elemento_1);
+	cola_encolar(cola, elemento_2);
 
+	pa2m_afirmar(cola_frente(cola) == elemento_0,
+		     "Se mantiene correctamente el frente de la cola.");
+	pa2m_afirmar(cola_tamanio(cola) == 3,
+		     "Actualiza tamaño de la cola correctamente.");
 
+	cola_destruir(cola);
+}
 
+void cola_desencolar_desencola_elementos()
+{
+	cola_t *cola = cola_crear();
 
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+
+	pa2m_afirmar(cola_desencolar(NULL) == NULL,
+		     "Desencolar un elemento en una cola nula devuelve NULL.");
+	pa2m_afirmar(cola_desencolar(cola) == NULL,
+		     "Desencolar un elemento en una cola vacía devuelve NULL");
+
+	cola_encolar(cola, elemento_0);
+	cola_encolar(cola, elemento_1);
+	cola_encolar(cola, elemento_2);
+
+	cola_desencolar(cola);
+	cola_desencolar(cola);
+
+	pa2m_afirmar(
+		cola_frente(cola) == elemento_2,
+		"Desencola un elemento en una cola no vacía correctamente.");
+	pa2m_afirmar(cola_tamanio(cola) == 1,
+		     "Actualiza tamaño de la cola correctamente.");
+
+	cola_destruir(cola);
+}
+
+void cola_tamanio_frente_y_vacia()
+{
+	cola_t *cola = cola_crear();
+
+	int numero_0 = 0;
+	int numero_1 = 1;
+	int numero_2 = 2;
+
+	void *elemento_0 = &numero_0;
+	void *elemento_1 = &numero_1;
+	void *elemento_2 = &numero_2;
+
+	pa2m_afirmar(cola_tamanio(NULL) == 0,
+		     "El tamaño de una cola nula devuelve 0.");
+	pa2m_afirmar(cola_tamanio(cola) == 0,
+		     "El tamaño de una cola vacía devuelve 0.");
+
+	pa2m_afirmar(cola_frente(NULL) == NULL,
+		     "El tope de una cola nula devuelve NULL.");
+	pa2m_afirmar(cola_frente(cola) == NULL,
+		     "El tope de una cola vacía devuelve NULL.");
+
+	pa2m_afirmar(cola_vacia(NULL) == true,
+		     "Verifica que una cola nula este vacía. ");
+	pa2m_afirmar(cola_vacia(cola) == true,
+		     "Verifica que una cola vacía este vacía.");
+
+	cola_encolar(cola, elemento_0);
+	cola_encolar(cola, elemento_1);
+	cola_encolar(cola, elemento_2);
+
+	pa2m_afirmar(cola_tamanio(cola) == 3,
+		     "Actualiza tamaño de la cola correctamente.");
+
+	cola_desencolar(cola);
+	pa2m_afirmar(cola_frente(cola) == elemento_1,
+		     "Devuelve el elemento del frente luego de desencolar.");
+
+	cola_desencolar(cola);
+	cola_desencolar(cola);
+
+	pa2m_afirmar(cola_vacia(cola) == true,
+		     "Al desapilar todos los elementos, la cola queda vacía.");
+
+	cola_destruir(cola);
+}
 
 int main()
 {
@@ -402,18 +783,25 @@ int main()
 
 	pa2m_nuevo_grupo("\nInserción de elementos en posicion especifica");
 	lista_insertar_en_posicion_inserta_elemento_en_posicion();
-	
+
 	pa2m_nuevo_grupo("\nQuita de elemento al final.");
 	lista_quitar_quita_elementos_al_final();
 
 	pa2m_nuevo_grupo("\nQuita de elementos en posicion especifica");
 	lista_quitar_en_posicion_quita_elemento_en_posicion();
 
-	pa2m_nuevo_grupo("\nObtencion elemento segun posición.");
-	lista_elemento_en_posicion_devuelve_elemento_segun_posicion_dada();
+	pa2m_nuevo_grupo("\nObtencion elemento según posición.");
+	lista_elemento_en_posicion_obtiene_elemento_de_la_posicion_indicada();
 
-	pa2m_nuevo_grupo("\nObtencion elemento segun condicion.");
+	pa2m_nuevo_grupo("\nObtencion elemento según condicion.");
 	lista_buscar_elemento_busca_segun_condicion_dada();
+
+	pa2m_nuevo_grupo("\nTamaño de lista y lista vacía");
+	lista_tamanio_devuelve_cantidad_de_elemento_de_la_lista();
+	lista_vacia_devuelve_si_tiene_elementos_o_no_la_lista();
+
+	pa2m_nuevo_grupo("\nPrimer y último elemento de la lista.");
+	lista_primer_y_ultimo_elemento();
 
 	pa2m_nuevo_grupo("\nFunciones del iterador interno");
 	iterador_interno_itera_internamente_sobre_lista();
@@ -422,11 +810,16 @@ int main()
 	iterador_externo_itera_externamente_sobre_lista();
 
 	pa2m_nuevo_grupo("\nFunciones de pila");
-	se_implementa_una_pila();
+	crear_una_pila_crea_una_pila_vacia();
+	pila_apilar_apila_elementos();
+	pila_desapilar_desapila_elementos();
+	pila_tamanio_tope_y_vacia();
 
 	pa2m_nuevo_grupo("\nFunciones de cola");
-	se_implementa_una_cola();
-
+	cola_crear_crea_cola_vacia();
+	cola_encolar_encola_elementos();
+	cola_desencolar_desencola_elementos();
+	cola_tamanio_frente_y_vacia();
 
 	return pa2m_mostrar_reporte();
 }

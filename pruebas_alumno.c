@@ -495,7 +495,6 @@ void iterador_externo_itera_externamente_sobre_lista()
 		     "Crea iterador con una lista vacía.");
 
 	lista_iterador_destruir(iterador_prueba);
-	
 
 	lista_insertar(lista, elemento_0);
 	lista_insertar(lista, elemento_1);

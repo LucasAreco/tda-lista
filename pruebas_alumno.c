@@ -487,10 +487,15 @@ void iterador_externo_itera_externamente_sobre_lista()
 	void *elemento_2 = &numero_2;
 	void *elemento_3 = &numero_3;
 
+	lista_iterador_t *iterador_prueba = lista_iterador_crear(lista);
+
 	pa2m_afirmar(lista_iterador_crear(NULL) == NULL,
 		     "Crear iterador de una lista nula devuelve NULL.");
-	pa2m_afirmar(lista_iterador_crear(lista) == NULL,
-		     "Crear iterador de una lista vacía devuelve NULL.");
+	pa2m_afirmar(iterador_prueba != NULL,
+		     "Crea iterador con una lista vacía.");
+
+	lista_iterador_destruir(iterador_prueba);
+	
 
 	lista_insertar(lista, elemento_0);
 	lista_insertar(lista, elemento_1);
